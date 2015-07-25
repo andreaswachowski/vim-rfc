@@ -63,7 +63,18 @@ endfunction
 function! s:open_entry_by_cr()
   let [type, id] = matchlist(getline('.'), '^\v(...)0*(\d+)')[1:2]
   silent close
-  execute 'silent edit http://www.ietf.org/rfc/'. (type == 'RFC' ? 'rfc' : 'std/std') . id .'.txt'
+  let filename = (type == 'RFC' ? 'rfc' : 'std') . id .'.txt'
+  " Careful, this variable is declared again in lib/rfc.lib, the values must match
+  " TODO: Declare the variable only here, and create the directory, if it
+  " does not exist, here
+  let cachedir = '~/.rfc_cache/'
+  let fullfilename = cachedir . filename
+  if filereadable(expand(fullfilename))
+	  execute 'silent edit '. fullfilename
+  else
+	  execute 'silent edit http://www.ietf.org/rfc/'. (type == 'RFC' ? "" : "std/" ) . filename
+	  execute 'write '. fullfilename
+  end
   setlocal filetype=rfc nomodifiable
   redraw!
 endfunction

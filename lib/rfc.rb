@@ -9,6 +9,7 @@ module VimRFC
   #
   $indexfile = File.expand_path('~/.vim-rfc.xml')
   $cachefile = File.expand_path('~/.vim-rfc.yml')
+  $cachedir = File.expand_path('~/.rfc_cache')
 
   $entryhash = {}
 
@@ -65,6 +66,7 @@ module VimRFC
         write_cachefile
         delete_indexfile
       end
+      Dir.mkdir $cachedir unless Dir.exists? $cachedir
     end
 
     def write_indexfile
